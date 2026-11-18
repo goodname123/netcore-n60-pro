@@ -28,7 +28,7 @@ EOF
 
 
 # Add ADGuardHome source
-git clone https://github.com/kenzok78/luci-app-adguardhome package/luci-app-adguardhome
+git clone -b dev https://github.com/stevenjoezhang/luci-app-adguardhome package/luci-app-adguardhome
 chmod -R 755 ./package/luci-app-adguardhome/*
 
 # 清理旧目录，拉取最新默认分支源码
