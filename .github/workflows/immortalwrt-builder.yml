@@ -10,23 +10,23 @@
 # See /LICENSE for more information.
 #
 
-name: immortalwrt-builder
+name: padavanonly-immortalwrt-mt798x-6.6-builder
 
 on:
   repository_dispatch:
   workflow_dispatch:
 
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/Yuzhii0718/immortalwrt-mt798x-6.6-padavanonly
+  REPO_BRANCH: openwrt-24.10-6.6
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: immortalwrt.config
   DIY_P1_SH: diy-part1.sh
-  DIY_P2_SH: diy-part4.sh
+  DIY_P2_SH: diy-part5-6.6.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
-  FIRMWARE_TAG: ImmortalWrt
+  FIRMWARE_TAG: padavanonly-yuzhi0718
   TZ: Asia/Shanghai
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-
+      
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -68,6 +68,11 @@ jobs:
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
+    - name: Fix CMake version for LuCI packages
+      run: |
+        cd openwrt
+        find feeds/luci -type f -name "CMakeLists.txt" -exec sed -i 's/cmake_minimum_required(VERSION 3.31)/cmake_minimum_required(VERSION 3.30)/' {} \;
+     
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
@@ -78,7 +83,7 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
-
+    
     - name: Download package
       id: package
       run: |
